@@ -7,11 +7,15 @@ package projett;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
@@ -31,6 +35,9 @@ public class AjterEcl extends javax.swing.JFrame {
      */
     public AjterEcl() {
         initComponents();
+        setResizable(false);
+        setLocationRelativeTo(null);
+        insertionDonneesCombox();
     }
         //Déclaration des tableaux qui contiendront les données récupérées dans le fihier excel
         ArrayList<String> entetesList = new ArrayList<>();
@@ -40,16 +47,79 @@ public class AjterEcl extends javax.swing.JFrame {
         ArrayList<String> sexeList = new ArrayList<>();
         ArrayList<Integer> agesList = new ArrayList<>();
         ArrayList<Integer> classeList = new ArrayList<>();
-        ArrayList<Integer> codeEcoleList = new ArrayList<>();
         ArrayList<Integer> numPermanantList = new ArrayList<>();
+        ArrayList<Integer> codeRecupArrayList = new ArrayList<>();
         
+        
+    
+        String ecoleNom;
+        Integer ecoleCode ;
+        Integer RegionCode;
         //Model du tablea d'affichage des informations lorsqu'on choisi le fichier
         
         String element[] = {"Nom", "Post-Nom", "Prenom", "Sexe", "age", "Classe", "Numero permanant"};
         String[] ligne = new String[7];
         DefaultTableModel model = new DefaultTableModel(null, element);
         
+        int ec = 0; 
         
+        void insertionDonneesCombox(){
+            
+            try{
+                Statement stm = connection.connectbd().createStatement();
+                String requete = "SELECT * FROM region";
+                ResultSet result = stm.executeQuery(requete);
+                
+                while(result.next()){
+                   listeRegions.addItem("Code : " + result.getString("codeRegion") + " || Nom: " + result.getString("nomRegion"));
+                   codeRecupArrayList.add(result.getInt("codeRegion"));
+                }
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(AjterEcl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+                
+        int  verifierDonnees(){
+
+            try { 
+                
+                Statement stm = connection.connectbd().createStatement();
+               
+
+                String requete = "SELECT * FROM ecole";
+                
+                
+                ResultSet result = stm.executeQuery(requete);
+           
+                //on vérifie si l'école n'existe pas déjà dans la base de données
+                
+                ArrayList<Integer> codeRegDatabase = new ArrayList<>();
+                ArrayList<Integer> codeDatabase = new ArrayList<>(); 
+                while(result.next()){
+                    Integer codes = Integer.parseInt(result.getString("codeEcole"));
+                    codeDatabase.add(codes); 
+                    
+                }
+                
+                if(codeDatabase.contains(ecoleCode)){
+                   JOptionPane.showMessageDialog(null, "L'école saisie existe déjà");
+                   
+                } else if (ec == 0){
+                    JOptionPane.showMessageDialog(null, "Veuillez Choisir une région");
+                    return  1;
+                } 
+                return  0;
+                 
+            } catch (Exception e) {
+                 return  1;
+            }
+           
+            
+            
+            
+        }
     
     
 
@@ -62,14 +132,13 @@ public class AjterEcl extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        FentreG = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         choiseFileBtn = new javax.swing.JButton();
         nomEcole = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        codeRegion = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         codeEcole = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -77,9 +146,11 @@ public class AjterEcl extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         nombreEleves = new javax.swing.JLabel();
         addBtn = new javax.swing.JButton();
+        listeRegions = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel1.setText("Ajouter les données globales d'une école");
 
         choiseFileBtn.setText("Choisir le fichier excel ");
@@ -89,13 +160,23 @@ public class AjterEcl extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel2.setText("Données des élèves");
 
+        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel3.setText("Nom de l'école ");
 
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel4.setText("Code de l'écode");
 
+        jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel5.setText("Code de la région");
+
+        codeEcole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                codeEcoleActionPerformed(evt);
+            }
+        });
 
         afficheSchoolDataTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -108,69 +189,83 @@ public class AjterEcl extends javax.swing.JFrame {
                 "Nom", "Post -Nom", "Prenom", "Sexe", "age", "Classe", "Numero permanant"
             }
         ));
+        afficheSchoolDataTable.setGridColor(new java.awt.Color(0, 0, 0));
         jScrollPane1.setViewportView(afficheSchoolDataTable);
 
+        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel6.setText("Nombre d'élèves");
 
         nombreEleves.setText("0");
 
         addBtn.setText("Ajouter");
+        addBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBtnActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(nomEcole, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(codeRegion, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addGap(77, 77, 77)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(codeEcole, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
-                            .addComponent(jLabel4)
-                            .addComponent(choiseFileBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(49, 49, 49)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(nombreEleves, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(addBtn)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(196, 196, 196)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(221, Short.MAX_VALUE))
+        listeRegions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listeRegionsActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout FentreGLayout = new javax.swing.GroupLayout(FentreG);
+        FentreG.setLayout(FentreGLayout);
+        FentreGLayout.setHorizontalGroup(
+            FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1)
+            .addGroup(FentreGLayout.createSequentialGroup()
+                .addGap(75, 75, 75)
+                .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel3)
+                    .addComponent(nomEcole)
+                    .addComponent(jLabel5)
+                    .addComponent(listeRegions, 0, 204, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
+                .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(choiseFileBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel4)
+                        .addComponent(codeEcole, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(80, 80, 80)
+                .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nombreEleves, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(75, 75, 75))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, FentreGLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(241, 241, 241))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+        FentreGLayout.setVerticalGroup(
+            FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(FentreGLayout.createSequentialGroup()
+                .addGap(27, 27, 27)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(18, 18, 18)
+                .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jLabel4)
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nomEcole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(codeEcole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nombreEleves))
-                .addGap(47, 47, 47)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nombreEleves, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nomEcole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
+                .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(codeRegion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(choiseFileBtn)
-                    .addComponent(addBtn))
-                .addGap(33, 33, 33)
+                .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(addBtn)
+                    .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(choiseFileBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(listeRegions)))
+                .addGap(44, 44, 44)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -178,19 +273,17 @@ public class AjterEcl extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(FentreG, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(FentreG, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void choiseFileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_choiseFileBtnActionPerformed
-        
-       
         
          
         //ouveture du fichier
@@ -235,11 +328,10 @@ public class AjterEcl extends javax.swing.JFrame {
                         
                     }
                     in.close();
-                    
-                    
+                    int nombresElevesEcole = nomsList.size();
+                    nombreEleves.setText(String.valueOf(nombresElevesEcole));
         
-                    //Statement stm = connection.connectbd().createStatement();
-                    //String requete = "SELECT * FROM  ecole ";
+                
                     
                     
                     int max = nomsList.size(); 
@@ -266,6 +358,98 @@ public class AjterEcl extends javax.swing.JFrame {
             
         }
     }//GEN-LAST:event_choiseFileBtnActionPerformed
+
+    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
+        int max = nomsList.size();
+        if(nomEcole.getText().isEmpty() || codeEcole.getText().isEmpty() || Integer.parseInt(this.codeEcole.getText()) == 0 ){
+           JOptionPane.showMessageDialog(null, "Veuillez remplir les champs et/eu denner des valeurs supérieurs à 0"); 
+        } else {
+            ecoleNom = nomEcole.getText();
+            ecoleCode = Integer.parseInt(this.codeEcole.getText());
+            
+            if(verifierDonnees() == 0){
+                try {
+               
+                    
+                         Statement stm = connection.connectbd().createStatement();
+                        
+                         String requete = "SELECT * FROM eleve";
+                         ResultSet result = stm.executeQuery(requete);
+                
+                        //on vérifie si l'élève n'existe pas déjà dans la base de données
+                        ArrayList<Integer> numeroPermanant = new ArrayList<>();
+                        while(result.next()){
+                            Integer numPerma = Integer.parseInt(result.getString("numeroPermanant"));
+                            numeroPermanant.add(numPerma); 
+                        }
+                        
+                    for (int i = 0; i < max; i++) {
+                       if(!numeroPermanant.isEmpty() && numeroPermanant.contains(numeroPermanant.get(i))){
+                        JOptionPane.showMessageDialog(null, "L'élève " + nomsList.get(i) +  " " + postNomsList.get(i)  + " "+ prenomList.get(i) + " déjà");
+                        } else{ 
+                            Statement requetStatement = connection.connectbd().createStatement();
+                            String commandesSql = "insert into eleve(nom, postNom, prenom, sexe, age, classe, codeEcole, numeroPermanant)" +
+                            "Values('" + nomsList.get(i) + "', '" + postNomsList.get(i)+ "', '" +
+                            prenomList.get(i) + "',  '" + sexeList.get(i) + "',  '" + agesList.get(i) + 
+                            "' ,'" + classeList.get(i) + "', '" + ecoleCode +  "' ,'" + numPermanantList.get(i) + "')";
+                            requetStatement.executeUpdate(commandesSql);     
+                    }
+                        if( i == max -1){
+                            JOptionPane.showMessageDialog(null, "Insertion réussie");
+                        } 
+                }  
+                        
+                
+                           
+                
+             } catch (SQLException ex) {
+                Logger.getLogger(AjterEcl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            Statement requetStatement;
+            try {
+                requetStatement = connection.connectbd().createStatement();
+                
+                if (max == 0){
+                    JOptionPane.showMessageDialog(null, "Veuillez choisir une fichier de donnée");
+                } else if (ecoleNom.isEmpty() || ecoleCode == null  || ecoleCode == 0 || RegionCode == null || ecoleCode == 0 ){
+                    JOptionPane.showMessageDialog(null, "Veuillez Reseigner des valeurs correctes");
+                } else {
+                    String commandesSql = "insert into ecole(nomEcole, nombreEleves, codeEcole, codeRegion)" +
+                        "Values('" + ecoleNom + "', '" + max + "', '" +
+                        ecoleCode + "',  '" + RegionCode  +"')";
+                        requetStatement.executeUpdate(commandesSql);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(AjterEcl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+           }else if (verifierDonnees() == 1){
+               JOptionPane.showMessageDialog(null, "Veuillez recommencer");
+           }
+            
+            
+            
+         
+    
+        
+        }
+           
+    }//GEN-LAST:event_addBtnActionPerformed
+
+    private void listeRegionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listeRegionsActionPerformed
+       
+        
+       if (!codeRecupArrayList.isEmpty()){
+           RegionCode =  codeRecupArrayList.get(listeRegions.getSelectedIndex());
+           ec = 1;   
+       }
+        
+                
+    }//GEN-LAST:event_listeRegionsActionPerformed
+
+    private void codeEcoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeEcoleActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_codeEcoleActionPerformed
 
     /**
      * @param args the command line arguments
@@ -300,25 +484,24 @@ public class AjterEcl extends javax.swing.JFrame {
                 new AjterEcl().setVisible(true);
             }
         });
-        
-        
+      
         
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel FentreG;
     private javax.swing.JButton addBtn;
     private javax.swing.JTable afficheSchoolDataTable;
     private javax.swing.JButton choiseFileBtn;
     private javax.swing.JTextField codeEcole;
-    private javax.swing.JTextField codeRegion;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JComboBox<String> listeRegions;
     private javax.swing.JTextField nomEcole;
     private javax.swing.JLabel nombreEleves;
     // End of variables declaration//GEN-END:variables
