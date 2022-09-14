@@ -81,7 +81,7 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
             
         }
                 
-        int  verifierDonnees(){
+        public int  verifierDonnees(){
 
             try { 
                 
@@ -95,7 +95,7 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
            
                 //on vérifie si l'école n'existe pas déjà dans la base de données
                 
-                ArrayList<Integer> codeRegDatabase = new ArrayList<>();
+               ;
                 ArrayList<Integer> codeDatabase = new ArrayList<>(); 
                 while(result.next()){
                     Integer codes = Integer.parseInt(result.getString("codeEcole"));
@@ -150,9 +150,14 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        FentreG.setBackground(new java.awt.Color(0, 204, 204));
+
+        jLabel1.setBackground(new java.awt.Color(178, 235, 242));
+        jLabel1.setFont(new java.awt.Font("Sitka Text", 1, 18)); // NOI18N
         jLabel1.setText("Ajouter les données globales d'une école");
 
+        choiseFileBtn.setBackground(new java.awt.Color(204, 255, 204));
+        choiseFileBtn.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         choiseFileBtn.setText("Choisir le fichier excel ");
         choiseFileBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -160,16 +165,20 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jLabel2.setBackground(new java.awt.Color(178, 235, 242));
+        jLabel2.setFont(new java.awt.Font("Sitka Text", 1, 18)); // NOI18N
         jLabel2.setText("Données des élèves");
 
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jLabel3.setBackground(new java.awt.Color(178, 235, 242));
+        jLabel3.setFont(new java.awt.Font("Sitka Text", 1, 18)); // NOI18N
         jLabel3.setText("Nom de l'école ");
 
-        jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jLabel4.setBackground(new java.awt.Color(178, 235, 242));
+        jLabel4.setFont(new java.awt.Font("Sitka Text", 1, 18)); // NOI18N
         jLabel4.setText("Code de l'écode");
 
-        jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jLabel5.setBackground(new java.awt.Color(178, 235, 242));
+        jLabel5.setFont(new java.awt.Font("Sitka Text", 1, 18)); // NOI18N
         jLabel5.setText("Code de la région");
 
         codeEcole.addActionListener(new java.awt.event.ActionListener() {
@@ -180,10 +189,7 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
 
         afficheSchoolDataTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "Nom", "Post -Nom", "Prenom", "Sexe", "age", "Classe", "Numero permanant"
@@ -192,11 +198,14 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
         afficheSchoolDataTable.setGridColor(new java.awt.Color(0, 0, 0));
         jScrollPane1.setViewportView(afficheSchoolDataTable);
 
-        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jLabel6.setBackground(new java.awt.Color(178, 235, 242));
+        jLabel6.setFont(new java.awt.Font("Sitka Text", 1, 18)); // NOI18N
         jLabel6.setText("Nombre d'élèves");
 
         nombreEleves.setText("0");
 
+        addBtn.setBackground(new java.awt.Color(0, 255, 0));
+        addBtn.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         addBtn.setText("Ajouter");
         addBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -222,7 +231,7 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
                     .addComponent(nomEcole)
                     .addComponent(jLabel5)
                     .addComponent(listeRegions, 0, 204, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
                 .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(choiseFileBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -237,24 +246,25 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
                 .addGap(75, 75, 75))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, FentreGLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(241, 241, 241))
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(226, 226, 226))
         );
         FentreGLayout.setVerticalGroup(
             FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(FentreGLayout.createSequentialGroup()
-                .addGap(27, 27, 27)
+                .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(34, 34, 34)
                 .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jLabel4)
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(codeEcole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nombreEleves, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nomEcole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nomEcole, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(codeEcole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(nombreEleves, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(30, 30, 30)
                 .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
