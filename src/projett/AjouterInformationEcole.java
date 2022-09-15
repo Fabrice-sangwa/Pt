@@ -5,6 +5,16 @@
  */
 package projett;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Fabrice
@@ -16,8 +26,112 @@ public class AjouterInformationEcole extends javax.swing.JFrame {
      */
     public AjouterInformationEcole() {
         initComponents();
+        setResizable(false);
+        setLocationRelativeTo(null);
+        initialisationComBox();
+        initiTableau();
     }
+    
+    
+    
+    int ec1 = 0; 
+    
+    
+    //Varibales qui vont recuperer les valeurs de différents champs 
+    String  nomEco ;  
+    int nombreEl; 
+    int numeroEc; 
+    int codeEc;
+    int  codeReg; 
+    int numTemp;
+   
+    ArrayList<Integer> codeList = new ArrayList<>();
+    
+    
+     void initialisationComBox(){
+        try{
+                Statement stm = connection.connectbd().createStatement();
+                String requete = "SELECT * FROM region, ecole";
+                ResultSet result = stm.executeQuery(requete);
+                
+                while(result.next()){
+                   codeRegion.addItem("Code : " + result.getInt("codeRegion") + " || Nom: " + result.getString("nomRegion"));
+                   codeList.add(result.getInt("codeEcole")); 
+                   
+                   
+                }
+                
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(AjouterDonneesEcole.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+    }
+     
+     
+     void initiTableau(){
+         try {
+            String element[] = {"Nom de l'école", "Nombre d'élèves", "Code de la Région", "Code de l'école"};
+            String[] ligne = new String[4];
+            DefaultTableModel model = new DefaultTableModel(null, element);
 
+            Statement stm = connection.connectbd().createStatement();
+            String requete = "SELECT * FROM ecole";
+            
+            ResultSet result = stm.executeQuery(requete);
+            
+            while(result.next()){
+                ligne[0] =result.getString("nomEcole");
+                ligne[1] =result.getString("nombreEleves");
+                ligne[2] =result.getString("codeRegion");
+                ligne[3] =result.getString("codeEcole");
+                
+                model.addRow(ligne);
+                //JOptionPane.showMessageDialog(null,ligne);
+            }
+            tableEc.setModel(model);
+        } catch (SQLException ex) {
+            Logger.getLogger(AjouterDonneesEcole.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+     
+     
+      public int  verifierDonnees(){
+
+            try { 
+                
+                Statement stm = connection.connectbd().createStatement();
+               
+
+                String requete = "SELECT * FROM ecole";
+                
+                
+                ResultSet result = stm.executeQuery(requete);
+           
+                //on vérifie si l'école n'existe pas déjà dans la base de données
+                
+               
+                ArrayList<Integer> codeDatabase = new ArrayList<>(); 
+                while(result.next()){
+                    Integer codes = Integer.parseInt(result.getString("codeEcole"));
+                    codeDatabase.add(codes); 
+                    
+                }
+                
+                if(codeDatabase.contains(codeEc)){
+                   JOptionPane.showMessageDialog(null, "Ecole existante");
+                   return  1; 
+                } else {
+                    return 0; 
+                }
+                 
+            } catch (Exception e) {
+                 return  1;
+        }
+       
+           
+    
+    }     
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -27,21 +141,405 @@ public class AjouterInformationEcole extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel14 = new javax.swing.JLabel();
+        nom = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableEleve = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        jButton7 = new javax.swing.JButton();
+        jLabel15 = new javax.swing.JLabel();
+        nomEcole = new javax.swing.JTextField();
+        nombreElves = new javax.swing.JTextField();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        numeroEcole = new javax.swing.JTextField();
+        jButton8 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
+        codeRegion = new javax.swing.JComboBox<>();
+        jLabel18 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tableEc = new javax.swing.JTable();
+
+        jLabel14.setBackground(new java.awt.Color(0, 255, 255));
+        jLabel14.setFont(new java.awt.Font("Bodoni MT", 0, 18)); // NOI18N
+        jLabel14.setText(" Nom ");
+
+        nom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nomActionPerformed(evt);
+            }
+        });
+
+        tableEleve.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Nom", "Post - Nom", "Prenom", "Sexe", "Age", "Classe", "Code Ecole", "Numero Permanant"
+            }
+        ));
+        tableEleve.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableEleveMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableEleve);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanel1.setBackground(new java.awt.Color(0, 153, 153));
+
+        jLabel13.setFont(new java.awt.Font("Bodoni MT", 0, 24)); // NOI18N
+        jLabel13.setText("AJOUT / SUPPRESION /MODIFICATION ECOLE");
+
+        jButton7.setBackground(new java.awt.Color(0, 153, 153));
+        jButton7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/projett/courbe-de-la-fleche-de-retour-pointant-vers-la-gauche.png"))); // NOI18N
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        jLabel15.setBackground(new java.awt.Color(0, 255, 255));
+        jLabel15.setFont(new java.awt.Font("Bodoni MT", 0, 18)); // NOI18N
+        jLabel15.setText(" Nom Ecole");
+
+        nomEcole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nomEcoleActionPerformed(evt);
+            }
+        });
+
+        nombreElves.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nombreElvesActionPerformed(evt);
+            }
+        });
+
+        jLabel16.setBackground(new java.awt.Color(0, 255, 255));
+        jLabel16.setFont(new java.awt.Font("Bodoni MT", 0, 18)); // NOI18N
+        jLabel16.setText("Nombre d'élèves");
+
+        jLabel17.setBackground(new java.awt.Color(0, 255, 255));
+        jLabel17.setFont(new java.awt.Font("Bodoni MT", 0, 18)); // NOI18N
+        jLabel17.setText("Numero de l'école");
+
+        numeroEcole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                numeroEcoleActionPerformed(evt);
+            }
+        });
+
+        jButton8.setBackground(new java.awt.Color(102, 255, 51));
+        jButton8.setText("Ajouter");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setBackground(new java.awt.Color(255, 153, 0));
+        jButton5.setText("Modifier");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jButton9.setBackground(new java.awt.Color(255, 51, 0));
+        jButton9.setText("Supprimer");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+
+        codeRegion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                codeRegionActionPerformed(evt);
+            }
+        });
+
+        jLabel18.setBackground(new java.awt.Color(0, 255, 255));
+        jLabel18.setFont(new java.awt.Font("Bodoni MT", 0, 18)); // NOI18N
+        jLabel18.setText("Code de la region");
+
+        tableEc.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Nom de l'école", "Nolmbre d'élèves", "Code de la region", "code de l'école"
+            }
+        ));
+        tableEc.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableEcMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tableEc);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nomEcole, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(codeRegion, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18))
+                .addGap(108, 108, 108)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nombreElves, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(137, 137, 137)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel16)
+                            .addComponent(numeroEcole, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(130, 130, 130)
+                        .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(52, Short.MAX_VALUE))
+            .addComponent(jScrollPane2)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 578, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(88, 88, 88))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13))
+                .addGap(33, 33, 33)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(nombreElves, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(nomEcole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(codeRegion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(42, 42, 42)
+                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(numeroEcole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(61, 61, 61)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 781, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 490, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        dispose();
+        AccueilAjouterInformation accueilAjouterInformation = new AccueilAjouterInformation();
+        accueilAjouterInformation.setVisible(true);
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void nomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nomActionPerformed
+
+    private void nomEcoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomEcoleActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nomEcoleActionPerformed
+
+    private void nombreElvesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreElvesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nombreElvesActionPerformed
+
+    private void numeroEcoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numeroEcoleActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_numeroEcoleActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        if (nomEcole.getText().isEmpty() || nombreElves.getText().isEmpty() || numeroEcole.getText().isEmpty() || ec1 == 0 ){
+            JOptionPane.showMessageDialog(null, "Veuillez Remplir un champ ou en selectionner");
+        } else if (!nombreElves.getText().chars().allMatch(Character :: isDigit) || !numeroEcole.getText().chars().allMatch(Character :: isDigit)){
+            JOptionPane.showMessageDialog(null, "Veuillez saisir des chiffres uniquement");
+        }  else {
+            nomEco = nomEcole.getText();
+            nombreEl = Integer.parseInt(nombreElves.getText());
+            codeReg = codeRegion.getSelectedIndex();
+            numeroEc = Integer.parseInt(numeroEcole.getText());
+            codeEc = (codeList.get(codeReg));
+            String temp =Integer.toString(codeEc) + numeroEc ;
+            codeEc = Integer.parseInt(temp) ;
+
+            if(verifierDonnees() == 0){
+
+                try {
+
+                    Statement requetStatement = connection.connectbd().createStatement();
+                    String commandesSql = "insert into ecole(nomEcole, nombreEleves, codeEcole, codeRegion)" +
+                    "Values('" + nomEco + "', '" + nombreEl+ "', '" +
+                    codeEc + "',  '" +  codeReg + "')";
+                    requetStatement.executeUpdate(commandesSql);
+
+                    JOptionPane.showMessageDialog(null, "Insertion réussie");
+                    initiTableau();
+                } catch (SQLException ex) {
+                    Logger.getLogger(AjouterDonneesEcole.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+        }
+
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+
+        DefaultTableModel dm = (DefaultTableModel) tableEc.getModel();
+        int selectIndex = tableEc.getSelectedRow();
+
+        if (nomEcole.getText().isEmpty() || nombreElves.getText().isEmpty() || numeroEcole.getText().isEmpty() || ec1 == 0 ){
+            JOptionPane.showMessageDialog(null, "Veuillez Remplir un champ ou en selectionner");
+        } else if (!nombreElves.getText().chars().allMatch(Character :: isDigit) || !numeroEcole.getText().chars().allMatch(Character :: isDigit)){
+            JOptionPane.showMessageDialog(null, "Veuillez saisir des chiffres uniquement");
+        }  else {
+            nomEco = nomEcole.getText();
+            nombreEl = Integer.parseInt(nombreElves.getText());
+            codeReg = codeRegion.getSelectedIndex();
+            numeroEc = Integer.parseInt(numeroEcole.getText());
+            codeEc = (codeList.get(codeReg));
+            String temp =Integer.toString(codeEc) + numeroEc ;
+            codeEc = Integer.parseInt(temp) ;
+
+           
+            if(verifierDonnees() == 0){
+
+                try {
+
+                    String requete = "UPDATE ecole SET nomEcole =?, nombreEleves =?, codeEcole =?, codeRegion =? where codeRegion =?";
+                    PreparedStatement stm = connection.connectbd().prepareStatement(requete);
+                    stm.setString(1, nomEco);
+                    stm.setInt(2, nombreEl);
+                    stm.setInt(3, codeEc);
+                    stm.setInt(4, codeReg);
+                    stm.setInt(5, numTemp);
+                   
+
+                    initiTableau();
+                    stm.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "Donnnées de l'élève modifiées");
+                    dispose();
+                    AjouterInformationEcole ajouterInformationEcolee = new AjouterInformationEcole();
+                    ajouterInformationEcolee.setVisible(true);
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(AjouterDonneesEcole.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+        }
+
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        DefaultTableModel dm = (DefaultTableModel) tableEc.getModel();
+        int selectIndex = tableEc.getSelectedRow();
+        numTemp  =  Integer.parseInt(dm.getValueAt(selectIndex, 3).toString());
+
+        try {
+            String requete = "DELETE from ecole where codeEcole =? ";
+            PreparedStatement stm = connection.connectbd().prepareStatement(requete);
+            stm.setInt(1, numTemp);
+            stm.executeUpdate();
+            initiTableau();
+
+            JOptionPane.showMessageDialog(null, "Ecole supprimé");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void codeRegionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeRegionActionPerformed
+            ec1 =1;
+    }//GEN-LAST:event_codeRegionActionPerformed
+
+    private void tableEleveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableEleveMouseClicked
+        DefaultTableModel dm = (DefaultTableModel) tableEleve.getModel();
+        int selectIndex = tableEleve.getSelectedRow();
+
+        nom.setText(dm.getValueAt(selectIndex,0).toString());
+        nombreElves.setText(dm.getValueAt(selectIndex, 1).toString());
+        numeroEcole.setText(dm.getValueAt(selectIndex,2).toString());
+        numTemp  =  Integer.parseInt(dm.getValueAt(selectIndex, 3).toString());
+
+    }//GEN-LAST:event_tableEleveMouseClicked
+
+    private void tableEcMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableEcMouseClicked
+        DefaultTableModel dm = (DefaultTableModel) tableEc.getModel();
+        int selectIndex = tableEc.getSelectedRow();
+
+        nomEcole.setText(dm.getValueAt(selectIndex,0).toString());
+        nombreElves.setText(dm.getValueAt(selectIndex, 1).toString());
+        numeroEcole.setText(dm.getValueAt(selectIndex,3).toString());
+        numTemp  =  Integer.parseInt(dm.getValueAt(selectIndex, 3).toString());
+
+    }//GEN-LAST:event_tableEcMouseClicked
 
     /**
      * @param args the command line arguments
@@ -80,5 +578,25 @@ public class AjouterInformationEcole extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> codeRegion;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField nom;
+    private javax.swing.JTextField nomEcole;
+    private javax.swing.JTextField nombreElves;
+    private javax.swing.JTextField numeroEcole;
+    private javax.swing.JTable tableEc;
+    private javax.swing.JTable tableEleve;
     // End of variables declaration//GEN-END:variables
 }
