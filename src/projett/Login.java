@@ -183,7 +183,7 @@ public class Login extends javax.swing.JFrame {
         String mdpValue = new String(mdpText.getPassword());
     
         
-        RechercheUi rechercheUi = new RechercheUi();
+        Accueil rechercheUi = new Accueil();
         
         
         String login;

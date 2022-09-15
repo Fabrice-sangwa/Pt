@@ -51,7 +51,7 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
         ArrayList<Integer> codeRecupArrayList = new ArrayList<>();
         
         
-    
+        String codeGlobaleEc;
         String ecoleNom;
         Integer ecoleCode ;
         Integer RegionCode;
@@ -147,6 +147,7 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
         nombreEleves = new javax.swing.JLabel();
         addBtn = new javax.swing.JButton();
         listeRegions = new javax.swing.JComboBox<>();
+        jButton7 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -219,6 +220,15 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
             }
         });
 
+        jButton7.setBackground(new java.awt.Color(0, 153, 153));
+        jButton7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/projett/courbe-de-la-fleche-de-retour-pointant-vers-la-gauche.png"))); // NOI18N
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout FentreGLayout = new javax.swing.GroupLayout(FentreG);
         FentreG.setLayout(FentreGLayout);
         FentreGLayout.setHorizontalGroup(
@@ -245,7 +255,9 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
                     .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(75, 75, 75))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, FentreGLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(26, 26, 26)
+                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(226, 226, 226))
         );
@@ -253,7 +265,9 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
             FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(FentreGLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton7))
                 .addGap(34, 34, 34)
                 .addGroup(FentreGLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -375,8 +389,9 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
            JOptionPane.showMessageDialog(null, "Veuillez remplir les champs et/eu denner des valeurs supérieurs à 0"); 
         } else {
             ecoleNom = nomEcole.getText();
+           
             ecoleCode = Integer.parseInt(this.codeEcole.getText());
-            
+            //klezfkjnkzejl
             if(verifierDonnees() == 0){
                 try {
                
@@ -447,10 +462,11 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void listeRegionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listeRegionsActionPerformed
-       
+        
         
        if (!codeRecupArrayList.isEmpty()){
            RegionCode =  codeRecupArrayList.get(listeRegions.getSelectedIndex());
+          // codeGlobaleEc = String.copyValueOf(codeRecupArrayList.get(listeRegions.getSelectedIndex()));
            ec = 1;   
        }
         
@@ -460,6 +476,12 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
     private void codeEcoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeEcoleActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_codeEcoleActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        dispose();
+        Accueil accueil = new  Accueil();
+        accueil.setVisible(true);
+    }//GEN-LAST:event_jButton7ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -505,6 +527,7 @@ public class AjouterDonneesEcole extends javax.swing.JFrame {
     private javax.swing.JTable afficheSchoolDataTable;
     private javax.swing.JButton choiseFileBtn;
     private javax.swing.JTextField codeEcole;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
